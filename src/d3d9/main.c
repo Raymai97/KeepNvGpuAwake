@@ -152,7 +152,7 @@ static int AppMain(void)
 	if (!s_hStdErr) goto eof;
 	s_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	if (!s_hStdOut) goto eof;
-	PrnOut("%s [build 2020.05.23] by raymai97\n\n", APP_TITLE);
+	PrnOut("%s [build 2020.12.21] by raymai97\n\n", APP_TITLE);
 
 	s_hHeap = GetProcessHeap();
 	if (!s_hHeap) goto eof;
@@ -212,4 +212,9 @@ eof:
 void RawMain(void)
 {
 	ExitProcess(AppMain());
+}
+
+int main(void)
+{
+	return AppMain();
 }
