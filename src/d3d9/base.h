@@ -49,6 +49,16 @@ int App_fWrite(HANDLE hFile, void const *pBuf, int cbBuf);
 int App_vfPrnf(HANDLE hFile, char const *pszFmt, va_list ap);
 int App_fPrnf(HANDLE hFile, char const *pszFmt, ...);
 
+// " 123" -> TRUE, 123
+// "123" -> TRUE, 123
+// "12,3" -> FALSE
+// "-123" -> FALSE
+// "123a" -> FALSE
+BOOL App_tcs_to_UINT(LPCTSTR lpsz, UINT* pVal);
+
+// To retrieve "lpCmdLine" of WinMain, from GetCommandLine()
+LPTSTR App_lpCmdLine(void);
+
 void PrnExoticErr_(HANDLE hFile, PCSTR pszCtx);
 void PrnNow_(HANDLE hFile);
 void PrnNowExoticErr(PCSTR pszCtx);

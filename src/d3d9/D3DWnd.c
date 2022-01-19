@@ -250,6 +250,9 @@ static void On_D3DWnd_TaskbarCreated(HWND hWnd)
 static void On_D3DWnd_NotiIcon_LButtonUp(HWND hWnd)
 {
 	hWnd = APP_MainWnd;
+	if (!hWnd) {
+		return;
+	}
 	if (IsWindowVisible(hWnd)) {
 		ShowWindow(hWnd, HIDE_WINDOW);
 	}

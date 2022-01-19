@@ -62,6 +62,34 @@ int App_fPrnf(HANDLE hFile, char const *pszFmt, ...)
 	return ret;
 }
 
+BOOL App_tcs_to_UINT(LPCTSTR lpsz, UINT* pVal)
+{
+	BOOL ok = FALSE;
+	HWND hDlg = 0;
+	HWND hCtl = 0;
+	hDlg = CreateWindow(TEXT("edit"), 0, WS_POPUP, 0, 0, 0, 0,
+		0, 0, 0, 0);
+	if (!hDlg) goto eof;
+	hCtl = CreateWindow(TEXT("edit"), 0, WS_CHILD, 0, 0, 0, 0,
+		hDlg, (HMENU)(WPARAM)(1234), 0, 0);
+	if (!hCtl) goto eof;
+	SetDlgItemText(hDlg, 1234, lpsz);
+	*pVal = GetDlgItemInt(hDlg, 1234, &ok, FALSE);
+eof:
+	// hCtl will be destroyed when hDlg is destroyed
+	if (hDlg) DestroyWindow(hDlg);
+	return ok;
+}
+
+LPTSTR App_lpCmdLine(void)
+{
+	TCHAR* p = GetCommandLine();
+	if (p[0] == '"') for (++p; *p != '"'; ++p);
+	else for (++p; *p != ' '; ++p);
+	for (++p; *p == ' '; ++p);
+	return p;
+}
+
 void PrnExoticErr_(HANDLE hFile, PCSTR pszCtx)
 {
 	if (s_AppWinErrProc) {
@@ -149,9 +177,7 @@ static int AppMain(void)
 	}
 #endif
 	s_hStdErr = GetStdHandle(STD_ERROR_HANDLE);
-	if (!s_hStdErr) goto eof;
 	s_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	if (!s_hStdOut) goto eof;
 	PrnOut("%s [build 2020.12.21] by raymai97\n\n", APP_TITLE);
 
 	s_hHeap = GetProcessHeap();
@@ -173,14 +199,11 @@ static int AppMain(void)
 	}
 
 	s_hMainWnd = GetConsoleWindow();
-	if (!s_hMainWnd) {
-		AppWinErrSetW32("GetConsoleWindow", GetLastError());
-		PrnNowExoticErr(NULL);
-		goto eof;
+	if (s_hMainWnd) {
+		SetWindowText(s_hMainWnd, AppTitle);
+		SendMessage(s_hMainWnd, WM_SETICON, 0, (LPARAM)s_hIcon);
+		SendMessage(s_hMainWnd, WM_SETICON, 1, (LPARAM)s_hIcon);
 	}
-	SetWindowText(s_hMainWnd, AppTitle);
-	SendMessage(s_hMainWnd, WM_SETICON, 0, (LPARAM)s_hIcon);
-	SendMessage(s_hMainWnd, WM_SETICON, 1, (LPARAM)s_hIcon);
 
 	s_h_d3d9 = LoadLibrary(d3d9);
 	if (!s_h_d3d9) {
