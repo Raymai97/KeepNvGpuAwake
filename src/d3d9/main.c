@@ -81,15 +81,6 @@ eof:
 	return ok;
 }
 
-LPTSTR App_lpCmdLine(void)
-{
-	TCHAR* p = GetCommandLine();
-	if (p[0] == '"') for (++p; *p != '"'; ++p);
-	else for (++p; *p != ' '; ++p);
-	for (++p; *p == ' '; ++p);
-	return p;
-}
-
 void PrnExoticErr_(HANDLE hFile, PCSTR pszCtx)
 {
 	if (s_AppWinErrProc) {
@@ -166,6 +157,38 @@ IDirect3D9 *Dywa_Direct3DCreate9(UINT sdkVer)
 	return ((fn_t)s_pfn_Direct3DCreate9)(sdkVer);
 }
 
+static BOOL My_StartWith(ChunkChunk *pCC, char const *pszKey, size_t *pcchMatch)
+{
+	BOOL ok = FALSE;
+	size_t n = 0;
+	for (;; ++n)
+	{
+		if (!pszKey[n]) { ok = TRUE; break; }
+		if (pCC->szChunk[n] != pszKey[n]) break;
+	}
+	*pcchMatch = n;
+	return ok;
+}
+
+static void My_ParseCommandLine(void)
+{
+	ChunkChunk cc;
+	int iChunk;
+	size_t cchMatch = 0;
+	ChunkChunkInit(&cc, GetCommandLine());
+	for (iChunk = 0; ChunkChunkNext(&cc); ++iChunk)
+	{
+		if (iChunk == 0) continue;
+		if (My_StartWith(&cc, "--wake-interval=", &cchMatch))
+		{
+			if (!App_tcs_to_UINT(&cc.szChunk[cchMatch], &s_appCfg.wake_interval))
+			{
+				PrnNowExoticErr("Bad command line param for 'wake-interval'.");
+			}
+		}
+	}
+}
+
 static int AppMain(void)
 {
 	HWND hD3DWnd = NULL;
@@ -178,13 +201,15 @@ static int AppMain(void)
 #endif
 	s_hStdErr = GetStdHandle(STD_ERROR_HANDLE);
 	s_hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-	PrnOut("%s [build 2020.12.21] by raymai97\n\n", APP_TITLE);
+	PrnOut("%s [build 2022.01.20] by raymai97\n\n", APP_TITLE);
 
 	s_hHeap = GetProcessHeap();
 	if (!s_hHeap) goto eof;
 	s_hInst = GetModuleHandle(NULL);
 	if (!s_hInst) goto eof;
 
+	s_appCfg.wake_interval = APPCFGDEF_WAKE_INTERVAL;
+	My_ParseCommandLine();
 	s_hIcon = LoadIcon(APP_hInst, (void*)IDI_ICON1);
 	if (!s_hIcon) {
 		AppWinErrSetW32("LoadIcon", GetLastError());

@@ -28,6 +28,14 @@ extern UINT const * const x_p_wmTaskbarCreated;
 extern HWND const * const x_p_hMainWnd;
 #define APP_MainWnd  (*x_p_hMainWnd)
 
+typedef struct AppCfg {
+	UINT wake_interval; // in millisecond
+#define APPCFGDEF_WAKE_INTERVAL  (500)
+} AppCfg;
+
+extern AppCfg const * const x_p_appCfg;
+#define APP_Cfg  (*x_p_appCfg)
+
 typedef struct NotifyIconDataV1 {
 	DWORD cbSize;
 	HWND hWnd;
@@ -55,9 +63,6 @@ int App_fPrnf(HANDLE hFile, char const *pszFmt, ...);
 // "-123" -> FALSE
 // "123a" -> FALSE
 BOOL App_tcs_to_UINT(LPCTSTR lpsz, UINT* pVal);
-
-// To retrieve "lpCmdLine" of WinMain, from GetCommandLine()
-LPTSTR App_lpCmdLine(void);
 
 void PrnExoticErr_(HANDLE hFile, PCSTR pszCtx);
 void PrnNow_(HANDLE hFile);

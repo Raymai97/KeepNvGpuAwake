@@ -155,11 +155,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\d3d9\base.h" />
+    <ClInclude Include="..\..\d3d9\chunkchunk.h" />
     <ClInclude Include="..\..\d3d9\D3DWnd.h" />
     <ClInclude Include="..\..\d3d9\resource.h" />
     <ClInclude Include="..\..\d3d9\szlitera.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\d3d9\chunkchunk.c" />
     <ClCompile Include="..\..\d3d9\D3DWnd.c" />
     <ClCompile Include="..\..\d3d9\main.c" />
     <ClCompile Include="..\..\d3d9\vc_patch.c">

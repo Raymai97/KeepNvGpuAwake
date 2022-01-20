@@ -1,5 +1,6 @@
 #include "base.h"
 #include "D3DWnd.h"
+#include "chunkchunk.h"
 
 EXTERN_C __declspec(dllexport) DWORD NvOptimusEnablement = 1;
 #ifdef UNICODE
@@ -19,6 +20,8 @@ static UINT s_wmTaskbarCreated;
 UINT const * const x_p_wmTaskbarCreated = &s_wmTaskbarCreated;
 static HWND s_hMainWnd;
 HWND const * const x_p_hMainWnd = &s_hMainWnd;
+static AppCfg s_appCfg;
+AppCfg const *const x_p_appCfg = &s_appCfg;
 static HMODULE s_h_d3d9;
 static FARPROC s_pfn_Direct3DCreate9;
 

@@ -17,7 +17,7 @@ enum { NotiIconMsg = 101 };
 
 enum { TimerID_Step = 100 };
 enum { StepDelay_CreateD3D = 1000 };
-enum { StepDelay_ResetPresent = 500 };
+#define StepDelay_ResetPresent  (APP_Cfg.wake_interval)
 
 static void D3DWnd_DelSelf(MySelf *pSelf);
 static BOOL D3DWnd_NewSelf(MySelf **ppSelf, HWND hWnd);
